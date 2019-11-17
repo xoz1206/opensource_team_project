@@ -106,13 +106,14 @@ def red_ball_tracing():
 
 #TRACKING FUNCTION
 def red_ball_tracking():
+    print("tracking")
     #TODO
 
 
 #전체 circles [x,y, radius] 출력
 #print(circles)
-
 red_ball_tracing()
+
 k = 0
 for i in range(0,len(add_img_list)):
 	cv2.imshow('add_image', add_img_list[k])
