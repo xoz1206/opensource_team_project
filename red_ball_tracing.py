@@ -4,8 +4,17 @@ import cv2
 #원주율
 PI = 3.14159265359
 
+# 여러 데이터 셋으로 실험
+# 1
 img_gray = cv2.imread('many_circles.jpg', cv2.IMREAD_GRAYSCALE) # create BGR to grayscale image 
 img_color = cv2.imread('many_circles.jpg')
+# 2
+#img_gray = cv2.imread('donggu.jpeg', cv2.IMREAD_GRAYSCALE) # create BGR to grayscale image 
+#img_color = cv2.imread('donggu.jpeg')
+# 3
+#img_gray = cv2.imread('baby_ball.jpeg', cv2.IMREAD_GRAYSCALE) # create BGR to grayscale image 
+#img_color = cv2.imread('baby_ball.jpeg')
+
 
 img_gray = cv2.medianBlur(img_gray,5) # medianBlur 처리
 
