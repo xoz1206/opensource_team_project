@@ -42,6 +42,12 @@ h, s, v =cv2.split(hsv_img)
 #threshold
 pixel_threshold = 80
 
+# using Distance maintain
+standard_size = 70 * 70 * PI
+# using location x, y of previous ball, first is center
+prev_center_x = round(width/2)
+prev_center_y = round(height/2)
+
 # TRACING FUNCTION
 def red_ball_tracing(): 
     for i in circles[0, :]:
@@ -107,7 +113,6 @@ def red_ball_tracking():
 #print(circles)
 
 red_ball_tracing()
-
 k = 0
 for i in range(0,len(add_img_list)):
 	cv2.imshow('add_image', add_img_list[k])
