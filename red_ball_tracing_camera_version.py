@@ -6,7 +6,6 @@ import numpy as np
 
 #PI
 PI = 3.14159265359
-
 #list
 ROI_img_list = []
 add_img_list = []
@@ -26,8 +25,8 @@ pixel_threshold = 80
 standard_size = 70 * 70 * PI
 
 #using location x, y, of previous ball, first is center
-prev_center_x = 0
-prev_center_y = 0
+prev_x = -1
+prev_y = -1
 
 #Tracing Function
 def red_ball_tracing(circles, h, s, v, img_color):
@@ -87,6 +86,20 @@ def red_ball_tracing(circles, h, s, v, img_color):
         #print circle
         img_color = cv2.circle(img_color, center_ROI, radius_ROI, (0, 255, 0), 3)
 
+#tracking
+def red_ball_tracking():
+    diff = 9999999
+    index = 0
+    for i in filtered_circles[0,:]:
+        x = int(i[0])
+        y = int(i[1])
+        radius = int(i[2]))
+        if (prev_x - x)**2 + (prev_y - y)**2 + (prev_radius - radius)**2 < diff:
+            diff = (prev_x - x)**2 + (prev_y - y)**2 + (prev_radius - radius)**2
+            index = i
+    #write on text file
+
+
 #-----------------main---------------#
 camera = PiCamera()
 camera.resolution = (640, 480)
@@ -103,16 +116,33 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     img_gray = cv2.medianBlur(img_gray, 5)
     height, width = img_gray.shape[:2]
     
-    #using location x, y, of previous ball, first is center
-    prev_center_x = round(width/2)
-    prev_center_y = round(height/2)
-
     circles = cv2.HoughCircles(img_gray, cv2.HOUGH_GRADIENT, 1, 70, param1=80, param2=30, minRadius=0, maxRadius=0)
     if circles is not None:
         circles = np.uint16(np.around(circles))
+        #detection
         red_ball_tracing(circles, h, s, v, img_color)
-    #-----tracking------
-    # TODO
+        #tracking
+        # not first
+        if prev_x != -1 and prev_y != -1:
+            red_ball_tracking()
+        # first
+        elif prev_x == 1 and prev_y == 1:
+            index = 0
+            diff = 9999999
+            # find circle near the center
+            for i in filtered_circles[0,:]:
+                x_ = int(i[0])
+                y_ = int(i[1])
+                radius_ = int(i[2])
+
+                if (x_ - width/2)**2 + (y_ - height/2)**2 < diff:
+                    diff = (x_ - width/2)**2 + (y_ - height/2)**2
+                    index = i
+
+            prev_x = int(i[0])
+            prev_y = int(i[1])
+            prev_radius = int(i[2])
+
     if len(add_img_list) > 0:
         print("detection")
         print(filtered_circles)
@@ -130,8 +160,4 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     rawCapture.truncate(0)
     if key == ord("q"):
         break;
-
-
-
-
 
