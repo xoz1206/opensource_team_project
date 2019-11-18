@@ -1,31 +1,13 @@
-import numpy as np
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import time
 import cv2
+import numpy as np
 
-#원주율
+#PI
 PI = 3.14159265359
 
-# 여러 데이터 셋으로 실험
-# 1
-img_gray = cv2.imread('many_circles.jpg', cv2.IMREAD_GRAYSCALE) # create BGR to grayscale image 
-img_color = cv2.imread('many_circles.jpg')
-# 2
-#img_gray = cv2.imread('donggu.jpeg', cv2.IMREAD_GRAYSCALE) # create BGR to grayscale image 
-#img_color = cv2.imread('donggu.jpeg')
-# 3
-#img_gray = cv2.imread('baby_ball.jpeg', cv2.IMREAD_GRAYSCALE) # create BGR to grayscale image 
-#img_color = cv2.imread('baby_ball.jpeg')
-
-
-img_gray = cv2.medianBlur(img_gray,5) # medianBlur 처리
-
-height, width = img_gray.shape[:2]
-
-#gray image에서 circle 검출
-#최적의 param1,2
-circles = cv2.HoughCircles(img_gray, cv2.HOUGH_GRADIENT, 1, 70, param1=80, param2=30, minRadius=0, maxRadius=0)
-circles = np.uint16(np.around(circles))
-
-#사용되는 list 목록
+#list
 ROI_img_list = []
 add_img_list = []
 whole_pixel_count_list = []
@@ -33,30 +15,29 @@ red_pixel_count_list = []
 pixel_ratio = []
 filtered_circles = []
 
-#빨간색 검출을 위한 HSV image
-hsv_img = cv2.cvtColor(img_color, cv2.COLOR_BGR2HSV)
-lower_red = [ 160, 100, 0]
-upper_red = [ 180, 255, 255]
-h, s, v =cv2.split(hsv_img)
+#HSV
+lower_red = [160, 100, 0]
+upper_red = [180, 255, 255]
 
 #threshold
 pixel_threshold = 80
 
-# using Distance maintain
+#using Distance maintain
 standard_size = 70 * 70 * PI
-# using location x, y of previous ball, first is center
-prev_center_x = round(width/2)
-prev_center_y = round(height/2)
 
-# TRACING FUNCTION
-def red_ball_tracing(): 
+#using location x, y, of previous ball, first is center
+prev_center_x = 0
+prev_center_y = 0
+
+#Tracing Function
+def red_ball_tracing(circles, h, s, v, img_color):
     for i in circles[0, :]:
         count = 0
         count_hsv = 0
-        #원본이미지에서 원하는 영역을 위한 circle 그리기
+
         center_ROI = (int(i[0]), int(i[1]))
         radius_ROI = int(i[2])
-        #pixel의 시작 끝 잡아주기 -> ushort_scalar 값이므로 음수가 나오지않는다. < 0 이게 되면 가장 큰 양수 값이 나온다.
+
         if center_ROI[0] - radius_ROI >= 0: 
             left = round(center_ROI[0] - radius_ROI)
         elif center_ROI[0] - radius_ROI < 0:
@@ -94,9 +75,8 @@ def red_ball_tracing():
                                 count_hsv = count_hsv + 1
         whole_pixel_count_list.append(count)
         red_pixel_count_list.append(count_hsv)
-
         # 전체 pixel 당 빨간색 pixel의 비율 계산
-        if count_hsv / count * 100 < pixel_threshold: continue
+        if count != 0 and count_hsv / count * 100 < pixel_threshold: continue
 
         # 빨간색 원만 원본이미지에서 ROI 영역 추출
         img_color_sub = img_color
@@ -104,23 +84,54 @@ def red_ball_tracing():
         add_img_list.append(img_color_sub)
         filtered_circles.append(i)
 
-#TRACKING FUNCTION
-def red_ball_tracking():
-    print("tracking")
-    #TODO
+        #print circle
+        img_color = cv2.circle(img_color, center_ROI, radius_ROI, (0, 255, 0), 3)
+
+#-----------------main---------------#
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(640, 480))
+time.sleep(0.1)
+
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+    image = frame.array
+    img_color = image.copy()
+    hsv_img = cv2.cvtColor(img_color, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(hsv_img)
+    img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.medianBlur(img_gray, 5)
+    height, width = img_gray.shape[:2]
+    
+    #using location x, y, of previous ball, first is center
+    prev_center_x = round(width/2)
+    prev_center_y = round(height/2)
+
+    circles = cv2.HoughCircles(img_gray, cv2.HOUGH_GRADIENT, 1, 70, param1=80, param2=30, minRadius=0, maxRadius=0)
+    if circles is not None:
+        circles = np.uint16(np.around(circles))
+        red_ball_tracing(circles, h, s, v, img_color)
+    #-----tracking------
+    # TODO
+    if len(add_img_list) > 0:
+        print("detection")
+        print(filtered_circles)
+    cv2.imshow("Frame", img_color)
+    
+    ROI_img_list.clear()
+    add_img_list.clear()
+    whole_pixel_count_list.clear()
+    red_pixel_count_list.clear()
+    pixel_ratio.clear()
+    filtered_circles.clear()
+
+    key = cv2.waitKey(1) & 0xFF
+    rawCapture.truncate(0)
+    rawCapture.truncate(0)
+    if key == ord("q"):
+        break;
 
 
-#전체 circles [x,y, radius] 출력
-#print(circles)
-red_ball_tracing()
 
-k = 0
-for i in range(0,len(add_img_list)):
-	cv2.imshow('add_image', add_img_list[k])
-	#filtering이 수행된 circles [x, y, radius] 출력
-	print(filtered_circles[k])
-	k = k+1
-	cv2.waitKey(0)
 
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+
