@@ -21,9 +21,6 @@ upper_red = [180, 255, 255]
 #threshold
 pixel_threshold = 80
 
-#using Distance maintain
-standard_size = 70 * 70 * PI
-
 #using location x, y, of previous ball, first is center
 prev_x = -1
 prev_y = -1
@@ -83,29 +80,41 @@ def red_ball_tracing(circles, h, s, v, img_color):
         add_img_list.append(img_color_sub)
         filtered_circles.append(i)
 
-        #print circle
-        img_color = cv2.circle(img_color, center_ROI, radius_ROI, (0, 255, 0), 3)
-
 #tracking
-def red_ball_tracking():
+def red_ball_tracking(img_color): 
     diff = 9999999
-    index = 0
-    for i in filtered_circles[0,:]:
+    index = [0,0,0]
+    for i in filtered_circles:
         x = int(i[0])
         y = int(i[1])
-        radius = int(i[2]))
+        radius = int(i[2])
         if (prev_x - x)**2 + (prev_y - y)**2 + (prev_radius - radius)**2 < diff:
             diff = (prev_x - x)**2 + (prev_y - y)**2 + (prev_radius - radius)**2
             index = i
+    
     #write on text file
+    if index[0] != 0 and index[1] != 0 and index[2] !=0 :
+        _X_ = index[0]
+        _Y_ = index[1]
+        _RADIUS_ = index[2]
+        with open("red_ball_info.txt", 'w') as f:
+            f.write(str(_X_)+'\n')
+            f.write(str(_Y_)+'\n')
+            f.write(str(_RADIUS_))
+            print(_X_, end=' ')
+            print(_Y_, end=' ')
+            print(_RADIUS_)
 
+        #print circle
+        _center_ = (_X_, _Y_) 
+        img_color = cv2.circle(img_color, _center_, _RADIUS_, (255, 0, 0), 5)
 
-#-----------------main---------------#
+#------------------main----------------#
 camera = PiCamera()
 camera.resolution = (640, 480)
-camera.framerate = 32
+camera.framerate = 8
 rawCapture = PiRGBArray(camera, size=(640, 480))
-time.sleep(0.1)
+time.sleep(0.05)
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     image = frame.array
@@ -116,36 +125,36 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     img_gray = cv2.medianBlur(img_gray, 5)
     height, width = img_gray.shape[:2]
     
-    circles = cv2.HoughCircles(img_gray, cv2.HOUGH_GRADIENT, 1, 70, param1=80, param2=30, minRadius=0, maxRadius=0)
+    circles = cv2.HoughCircles(img_gray, cv2.HOUGH_GRADIENT, 1, 70, param1=80, param2=30, minRadius=15, maxRadius=0)
     if circles is not None:
         circles = np.uint16(np.around(circles))
         #detection
         red_ball_tracing(circles, h, s, v, img_color)
-        #tracking
-        # not first
-        if prev_x != -1 and prev_y != -1:
-            red_ball_tracking()
-        # first
-        elif prev_x == 1 and prev_y == 1:
-            index = 0
-            diff = 9999999
-            # find circle near the center
-            for i in filtered_circles[0,:]:
-                x_ = int(i[0])
-                y_ = int(i[1])
-                radius_ = int(i[2])
+        if filtered_circles is not None:
+            #tracking
+            # not first
+            if prev_x != -1 and prev_y != -1:
+                red_ball_tracking(img_color)
+            # first
+            else:
+                index = [0, 0, 0]
+                diff = 9999999
+                # find circle near the center
+                for i in filtered_circles:
+                    x_ = int(i[0])
+                    y_ = int(i[1])
+                    radius_ = int(i[2])
 
-                if (x_ - width/2)**2 + (y_ - height/2)**2 < diff:
-                    diff = (x_ - width/2)**2 + (y_ - height/2)**2
-                    index = i
+                    if (x_ - width/2)**2 + (y_ - height/2)**2 < diff:
+                        diff = (x_ - width/2)**2 + (y_ - height/2)**2
+                        index = i
 
-            prev_x = int(i[0])
-            prev_y = int(i[1])
-            prev_radius = int(i[2])
+                prev_x = index[0]
+                prev_y = index[1]
+                prev_radius = index[2]
 
     if len(add_img_list) > 0:
         print("detection")
-        print(filtered_circles)
     cv2.imshow("Frame", img_color)
     
     ROI_img_list.clear()
