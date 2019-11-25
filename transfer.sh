@@ -1,5 +1,4 @@
 #!/bin/bash
-
 while [ 1 ]
 do
     read -t 0.1 answer

@@ -112,7 +112,7 @@ def red_ball_tracking(img_color):
         _center_ = (_X_, _Y_) 
         img_color = cv2.circle(img_color, _center_, _RADIUS_, (255, 0, 0), 5)
 
-#------------------main----------------#
+#-------------------main----------------#
 camera = PiCamera()
 camera.resolution = (640, 480)
 camera.framerate = 30
