@@ -82,7 +82,7 @@ def red_ball_tracing(circles, h, s, v, img_color):
 
 #tracking
 def red_ball_tracking(img_color): 
-    diff = 9999999
+    diff = 640000
     index = [0,0,0]
     for i in filtered_circles:
         x = int(i[0])
@@ -97,10 +97,13 @@ def red_ball_tracking(img_color):
         _X_ = index[0]
         _Y_ = index[1]
         _RADIUS_ = index[2]
+        _HEIGHT_, _WIDTH_ = img_color.shape[:2]
         with open("red_ball_info.txt", 'w') as f:
             f.write(str(_X_)+'\n')
-            f.write(str(_Y_)+'\n')
-            f.write(str(_RADIUS_))
+            #f.write(str(_Y_)+'\n')
+            f.write(str(_RADIUS_)+'\n')
+            f.write(str(_WIDTH_) +'\n')
+            #f.writh(str(_HEIGHT_)+'\n')
             print(_X_, end=' ')
             print(_Y_, end=' ')
             print(_RADIUS_)
@@ -109,10 +112,10 @@ def red_ball_tracking(img_color):
         _center_ = (_X_, _Y_) 
         img_color = cv2.circle(img_color, _center_, _RADIUS_, (255, 0, 0), 5)
 
-#------------------main----------------#
+#-------------------main----------------#
 camera = PiCamera()
 camera.resolution = (640, 480)
-camera.framerate = 8
+camera.framerate = 30
 rawCapture = PiRGBArray(camera, size=(640, 480))
 time.sleep(0.05)
 
