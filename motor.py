@@ -27,7 +27,9 @@ try:
 
         f.close()
         # no receive information
-        if (x == 0 and r == 0 and Center_x == 0): continue
+        if (x == 0 and r == 0 and Center_x == 0): 
+            mB.stop(stop_action='brake')
+            mC.stop(stop_action='brake')
         
         # ball location is right
         if (x - Center_x) > 5:
