@@ -115,7 +115,7 @@ def red_ball_tracking(img_color):
 #-------------------main----------------#
 camera = PiCamera()
 camera.resolution = (640, 480)
-camera.framerate = 30
+camera.framerate = 20
 rawCapture = PiRGBArray(camera, size=(640, 480))
 time.sleep(0.05)
 
@@ -141,7 +141,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             # first
             else:
                 index = [0, 0, 0]
-                diff = 9999999
+                diff = 640000
                 # find circle near the center
                 for i in filtered_circles:
                     x_ = int(i[0])

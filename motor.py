@@ -26,7 +26,9 @@ try:
         else: Center_x = 0
 
         f.close()
-
+        # no receive information
+        if (x == 0 and r == 0 and Center_x == 0): continue
+        
         # ball location is right
         if (x - Center_x) > 5:
             # ball is far
