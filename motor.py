@@ -17,12 +17,13 @@ try:
         f = open("red_ball_info.txt",'r')
         line = f.readline() # location x
         if(line != ''): x = int(line)
-
+        else: x = 0
         line = f.readline() # radius r
         if(line != ''): r = int(line)
-
+        else: r = 0
         line = f.readline() # image width
         if(line != ''): Center_x = int(line) / 2
+        else: Center_x = 0
 
         f.close()
 
