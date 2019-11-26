@@ -82,7 +82,7 @@ def red_ball_tracing(circles, h, s, v, img_color):
 
 #tracking
 def red_ball_tracking(img_color): 
-    diff = 640000
+    diff = 640000 ## max (640 * 640 + 480 * 480)
     index = [0,0,0]
     for i in filtered_circles:
         x = int(i[0])
