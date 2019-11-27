@@ -28,21 +28,21 @@ try:
         f.close()
         # no receive information
         if (x == 0 and r == 0 and Center_x == 0): 
-            mB.stop(stop_action='brake')
-            mC.stop(stop_action='brake')
+            mB.run_to_rel_pos(position_sp=360, speed_sp = 0)
+            mC.run_to_rel_pos(position_sp=360, speed_sp = 0)
         
         # ball location is right
         if (x - Center_x) > 20:
             # ball is far
             if Config_r > r:
                 # move to right go
-                mB.run_to_rel_pos(position_sp=360, speed_sp = 100)
-                mC.run_to_rel_pos(position_sp=360, speed_sp = 50)
+                mB.run_to_rel_pos(position_sp=360, speed_sp = 30)
+                mC.run_to_rel_pos(position_sp=360, speed_sp = 15)
             # ball is near
             elif Config_r < r:
                 # move to left back
-                mB.run_to_rel_pos(position_sp=-360, speed_sp = 50)
-                mC.run_to_rel_pos(position_sp=-360, speed_sp = 100)
+                mB.run_to_rel_pos(position_sp=-360, speed_sp = 15)
+                mC.run_to_rel_pos(position_sp=-360, speed_sp = 30)
             else:
                 mB.stop(stop_action='brake')
                 mC.stop(stop_action='brake')
@@ -52,12 +52,12 @@ try:
             # ball is far
             if Config_r > r:
                 # move to left go
-                mB.run_to_rel_pos(position_sp=360, speed_sp = 50)
-                mC.run_to_rel_pos(position_sp=360, speed_sp = 100)
+                mB.run_to_rel_pos(position_sp=360, speed_sp = 15)
+                mC.run_to_rel_pos(position_sp=360, speed_sp = 30)
             # ball is near
             elif Config_r < r:
-                mB.run_to_rel_pos(position_sp=-360, speed_sp = 100)
-                mC.run_to_rel_pos(position_sp=-360, speed_sp = 50)
+                mB.run_to_rel_pos(position_sp=-360, speed_sp = 30)
+                mC.run_to_rel_pos(position_sp=-360, speed_sp = 15)
             else:
                 mB.stop(stop_action='brake')
                 mC.stop(stop_action='brake')
@@ -66,12 +66,12 @@ try:
         else:
             # ball is far
             if Config_r < r:
-                mB.run_to_rel_pos(position_sp=360, speed_sp = 50)
-                mC.run_to_rel_pos(position_sp=360, speed_sp = 50)
+                mB.run_to_rel_pos(position_sp=360, speed_sp = 15)
+                mC.run_to_rel_pos(position_sp=360, speed_sp = 15)
             # ball is near
             elif Config_r > r:
-                mB.run_to_rel_pos(position_sp=-360, speed_sp = 50)
-                mC.run_to_rel_pos(position_sp=-360, speed_sp = 50)
+                mB.run_to_rel_pos(position_sp=-360, speed_sp = 15)
+                mC.run_to_rel_pos(position_sp=-360, speed_sp = 15)
             else:
                 mB.stop(stop_action='brake')
                 mC.stop(stop_action='brake')
