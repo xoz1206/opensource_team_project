@@ -15,8 +15,8 @@ pixel_ratio = []
 filtered_circles = []
 
 #HSV
-lower_red = [150, 100, 0]
-upper_red = [190, 255, 255]
+lower_red = [160, 100, 0]
+upper_red = [180, 255, 255]
 
 #threshold
 pixel_threshold = 80
@@ -164,9 +164,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 f.write(str(_RADIUS_)+'\n')
                 f.write(str(_WIDTH_) +'\n')
 
-
     if len(add_img_list) > 0:
         print("detection")
+    
+    else:
+        with open("red_ball_info.txt", 'w') as f:
+            _X_ = 0
+            _RADIUS_ = 0
+            _WIDTH_  = 0
+            f.write(str(_X_)+'\n')
+            f.write(str(_RADIUS_)+'\n')
+            f.write(str(_WIDTH_)+'\n')
+    
     cv2.imshow("Frame", img_color)
     
     ROI_img_list.clear()
