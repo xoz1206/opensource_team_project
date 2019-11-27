@@ -32,7 +32,7 @@ try:
             mC.stop(stop_action='brake')
         
         # ball location is right
-        if (x - Center_x) > 5:
+        if (x - Center_x) > 20:
             # ball is far
             if Config_r > r:
                 # move to right go
@@ -48,7 +48,7 @@ try:
                 mC.stop(stop_action='brake')
 
         # ball location is left
-        elif x-Center_x < -5:
+        elif x-Center_x < -20:
             # ball is far
             if Config_r > r:
                 # move to left go
