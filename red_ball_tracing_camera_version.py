@@ -158,15 +158,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         else:
             with open("red_ball_info.txt", 'w') as f:
                 _X_ = 0
-                _Y_ = 0
                 _RADIUS_ = 0
                 _WIDTH_  = 0
-                _HEIGHT_ = 0
                 f.write(str(_X_)+'\n')
-                #f.write(str(_Y_)+'\n')
                 f.write(str(_RADIUS_)+'\n')
                 f.write(str(_WIDTH_) +'\n')
-                #f.writh(str(_HEIGHT_)+'\n')
 
 
     if len(add_img_list) > 0:
