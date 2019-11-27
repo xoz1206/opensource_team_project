@@ -44,8 +44,8 @@ try:
                 mB.run_to_rel_pos(position_sp=-360, speed_sp = 15)
                 mC.run_to_rel_pos(position_sp=-360, speed_sp = 30)
             else:
-                mB.stop(stop_action='brake')
-                mC.stop(stop_action='brake')
+                mB.run_to_rel_pos(position_sp=360, speed_sp = 0)
+                mC.run_to_rel_pos(position_sp=360, speed_sp = 0)
 
         # ball location is left
         elif x-Center_x < -20:
@@ -59,8 +59,8 @@ try:
                 mB.run_to_rel_pos(position_sp=-360, speed_sp = 30)
                 mC.run_to_rel_pos(position_sp=-360, speed_sp = 15)
             else:
-                mB.stop(stop_action='brake')
-                mC.stop(stop_action='brake')
+                mB.run_to_rel_pos(position_sp=360, speed_sp = 0)
+                mC.run_to_rel_pos(position_sp=360, speed_sp = 0)
 
         # ball location is center
         else:
@@ -73,9 +73,12 @@ try:
                 mB.run_to_rel_pos(position_sp=-360, speed_sp = 15)
                 mC.run_to_rel_pos(position_sp=-360, speed_sp = 15)
             else:
-                mB.stop(stop_action='brake')
-                mC.stop(stop_action='brake')
+                mB.run_to_rel_pos(position_sp=360, speed_sp = 0)
+                mC.run_to_rel_pos(position_sp=360, speed_sp = 0)
 except KeyboardInterrupt:
+    # exit
+    mB.run_to_rel_pos(position_sp=360, speed_sp = 0)
+    mC.run_to_rel_pos(position_sp=360, speed_sp = 0)
     pass
 
 

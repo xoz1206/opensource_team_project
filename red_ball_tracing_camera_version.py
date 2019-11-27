@@ -15,8 +15,8 @@ pixel_ratio = []
 filtered_circles = []
 
 #HSV
-lower_red = [160, 100, 0]
-upper_red = [180, 255, 255]
+lower_red = [150, 100, 0]
+upper_red = [190, 255, 255]
 
 #threshold
 pixel_threshold = 80
